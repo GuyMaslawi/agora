@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - CLIENT_URL=http://localhost:3000
+    networks:
+      - agora-network
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://server:3001
+    depends_on:
+      - server
+    networks:
+      - agora-network
+
+networks:
+  agora-network:
+    driver: bridge
+
