@@ -4,7 +4,6 @@ import { fetchCountries } from '../../api/countries';
 import { Country } from '../../types/country';
 import CountriesToolbar from '../CountriesToolbar/CountriesToolbar';
 import CountriesGrid from '../CountriesGrid/CountriesGrid';
-import LoadingState from '../LoadingState/LoadingState';
 import ErrorState from '../ErrorState/ErrorState';
 import { Box, Typography, Container } from '@mui/material';
 import { countriesPageStyles } from './CountriesPage.sx';
@@ -61,10 +60,6 @@ function CountriesPage() {
     return sorted;
   }, [countries, searchQuery, sortKey, sortDirection]);
 
-  if (isLoading) {
-    return <LoadingState />;
-  }
-
   if (error) {
     const errorMessage = error instanceof Error ? error.message : 'Failed to fetch countries. Please try again.';
     return <ErrorState onRetry={() => refetch()} errorMessage={errorMessage} />;
@@ -89,7 +84,7 @@ function CountriesPage() {
           onSortKeyChange={handleSortKeyChange}
           onSortDirectionChange={handleSortDirectionChange}
         />
-        <CountriesGrid countries={filteredAndSortedCountries} />
+        <CountriesGrid countries={filteredAndSortedCountries} isLoading={isLoading} />
       </Container>
     </Box>
   );

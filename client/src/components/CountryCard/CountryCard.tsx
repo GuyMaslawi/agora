@@ -8,9 +8,11 @@ import { formatPopulation } from './utils';
 
 interface CountryCardProps {
   country: Country;
+  onImageLoad?: () => void;
+  onImageError?: () => void;
 }
 
-const CountryCard = memo(function CountryCard({ country }: CountryCardProps) {
+const CountryCard = memo(function CountryCard({ country, onImageLoad, onImageError }: CountryCardProps) {
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
 
@@ -36,11 +38,15 @@ const CountryCard = memo(function CountryCard({ country }: CountryCardProps) {
             position: 'relative',
             zIndex: 0,
           }}
-          loading="lazy"
-          onLoad={() => setImageLoading(false)}
+          loading="eager"
+          onLoad={() => {
+            setImageLoading(false);
+            onImageLoad?.();
+          }}
           onError={() => {
             setImageLoading(false);
             setImageError(true);
+            onImageError?.();
           }}
         />
         {imageError && (
@@ -89,7 +95,9 @@ const CountryCard = memo(function CountryCard({ country }: CountryCardProps) {
     prevProps.country.name === nextProps.country.name &&
     prevProps.country.capital === nextProps.country.capital &&
     prevProps.country.population === nextProps.country.population &&
-    prevProps.country.flagUrl === nextProps.country.flagUrl
+    prevProps.country.flagUrl === nextProps.country.flagUrl &&
+    prevProps.onImageLoad === nextProps.onImageLoad &&
+    prevProps.onImageError === nextProps.onImageError
   );
 });
 
