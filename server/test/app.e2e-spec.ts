@@ -2,29 +2,21 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { HttpService } from '@nestjs/axios';
-import { of, throwError } from 'rxjs';
+import axios from 'axios';
+
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('CountriesController (e2e)', () => {
   let app: INestApplication;
-  let httpService: HttpService;
-
-  const mockHttpService = {
-    get: jest.fn(),
-  };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    })
-      .overrideProvider(HttpService)
-      .useValue(mockHttpService)
-      .compile();
+    }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
-
-    httpService = moduleFixture.get<HttpService>(HttpService);
   });
 
   afterEach(() => {
@@ -49,7 +41,7 @@ describe('CountriesController (e2e)', () => {
       },
     ];
 
-    mockHttpService.get.mockReturnValue(of({ data: mockApiResponse }));
+    mockedAxios.get.mockResolvedValue({ data: mockApiResponse });
 
     const response = await request(app.getHttpServer()).get('/api/countries').expect(200);
 
@@ -71,7 +63,7 @@ describe('CountriesController (e2e)', () => {
   });
 
   it('/api/countries (GET) should return 502 when external API fails', async () => {
-    mockHttpService.get.mockReturnValue(throwError(() => new Error('Network error')));
+    mockedAxios.get.mockRejectedValue(new Error('Network error'));
 
     await request(app.getHttpServer())
       .get('/api/countries')

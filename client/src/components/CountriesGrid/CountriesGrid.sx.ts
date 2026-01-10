@@ -5,10 +5,8 @@ export const countriesGridStyles: Record<string, SxProps<Theme>> = {
     width: '100%',
   },
   gridItem: {
-    // Items are fully visible immediately - no initial opacity: 0
     opacity: 1,
     transform: 'translateY(0)',
-    // Optional subtle enhancement animation that doesn't block visibility
     transition: 'opacity 0.2s ease-out, transform 0.2s ease-out',
   },
   emptyState: {

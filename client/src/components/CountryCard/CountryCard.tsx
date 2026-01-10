@@ -84,7 +84,6 @@ const CountryCard = memo(function CountryCard({ country }: CountryCardProps) {
     </Card>
   );
 }, (prevProps, nextProps) => {
-  // Custom comparison: only re-render if country data actually changed
   return (
     prevProps.country.code === nextProps.country.code &&
     prevProps.country.name === nextProps.country.name &&

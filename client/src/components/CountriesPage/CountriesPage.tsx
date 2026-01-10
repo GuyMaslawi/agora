@@ -20,8 +20,8 @@ function CountriesPage() {
   const { data: countries = [], isLoading, error, refetch } = useQuery<Country[]>({
     queryKey: ['countries'],
     queryFn: fetchCountries,
-    staleTime: 5 * 60 * 1000, // 5 minutes - data is considered fresh for 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes - cache garbage collection time (was cacheTime in v4)
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
   const handleSearchChange = useCallback((query: string) => {
@@ -36,7 +36,6 @@ function CountriesPage() {
     setSortDirection(direction);
   }, []);
 
-  // Real-time filtering: filters countries by name as user types
   const filteredAndSortedCountries = useMemo(() => {
     let filtered = countries;
 

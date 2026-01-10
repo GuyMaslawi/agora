@@ -58,7 +58,7 @@ describe('CountriesPage', () => {
 
   it('renders loading state while request is pending', async () => {
     vi.mocked(fetchCountries).mockImplementation(
-      () => new Promise(() => {}) // Never resolves
+      () => new Promise(() => {})
     );
 
     render(<CountriesPage />, { wrapper: createWrapper() });

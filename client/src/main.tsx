@@ -6,7 +6,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Box, CircularProgress } from '@mui/material';
 import { theme } from './theme';
 
-// Lazy load the main app component for code splitting
 const App = lazy(() => import('./App'));
 
 const queryClient = new QueryClient({
@@ -14,8 +13,8 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutes - data is considered fresh for 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes - cache garbage collection time (was cacheTime in v4)
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
     },
   },
 });

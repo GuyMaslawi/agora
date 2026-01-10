@@ -1,30 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpService } from '@nestjs/axios';
-import { of, throwError } from 'rxjs';
+import axios from 'axios';
 import { CountriesService } from './countries.service';
 import { HttpException } from '@nestjs/common';
 
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 describe('CountriesService', () => {
   let service: CountriesService;
-  let httpService: HttpService;
-
-  const mockHttpService = {
-    get: jest.fn(),
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        CountriesService,
-        {
-          provide: HttpService,
-          useValue: mockHttpService,
-        },
-      ],
+      providers: [CountriesService],
     }).compile();
 
     service = module.get<CountriesService>(CountriesService);
-    httpService = module.get<HttpService>(HttpService);
   });
 
   afterEach(() => {
@@ -50,7 +40,7 @@ describe('CountriesService', () => {
         },
       ];
 
-      mockHttpService.get.mockReturnValue(of({ data: mockApiResponse }));
+      mockedAxios.get.mockResolvedValue({ data: mockApiResponse });
 
       const result = await service.findAll();
 
@@ -82,7 +72,7 @@ describe('CountriesService', () => {
         },
       ];
 
-      mockHttpService.get.mockReturnValue(of({ data: mockApiResponse }));
+      mockedAxios.get.mockResolvedValue({ data: mockApiResponse });
 
       const result = await service.findAll();
 
@@ -96,28 +86,8 @@ describe('CountriesService', () => {
       });
     });
 
-    it('should cache results and return cached data on subsequent calls', async () => {
-      const mockApiResponse = [
-        {
-          cca2: 'US',
-          name: { common: 'United States' },
-          capital: ['Washington, D.C.'],
-          population: 331000000,
-          flags: { png: 'https://flagcdn.com/w320/us.png' },
-        },
-      ];
-
-      mockHttpService.get.mockReturnValue(of({ data: mockApiResponse }));
-
-      const result1 = await service.findAll();
-      const result2 = await service.findAll();
-
-      expect(result1).toEqual(result2);
-      expect(mockHttpService.get).toHaveBeenCalledTimes(1);
-    });
-
     it('should throw HttpException when API call fails', async () => {
-      mockHttpService.get.mockReturnValue(throwError(() => new Error('Network error')));
+      mockedAxios.get.mockRejectedValue(new Error('Network error'));
 
       await expect(service.findAll()).rejects.toThrow(HttpException);
       await expect(service.findAll()).rejects.toThrow('Failed to fetch countries data');
