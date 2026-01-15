@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import PublicIcon from '@mui/icons-material/Public';
 import { loadingStateStyles } from './LoadingState.sx';
 
-const LoadingState = () => {
+const LoadingState = memo(function LoadingState() {
   return (
     <Box sx={loadingStateStyles.container}>
       <Box sx={loadingStateStyles.loaderContainer}>
@@ -22,7 +23,7 @@ const LoadingState = () => {
       </Typography>
     </Box>
   );
-};
+});
 
 export default LoadingState;
 

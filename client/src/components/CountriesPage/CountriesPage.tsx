@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { memo, useState, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchCountries } from '../../api/countries';
 import { Country } from '../../types/country';
@@ -7,11 +7,12 @@ import CountriesGrid from '../CountriesGrid/CountriesGrid';
 import ErrorState from '../ErrorState/ErrorState';
 import { Box, Typography, Container } from '@mui/material';
 import { countriesPageStyles } from './CountriesPage.sx';
+import { filterAndSortCountries } from './utils';
 
 export type SortKey = 'name' | 'population';
 export type SortDirection = 'asc' | 'desc';
 
-function CountriesPage() {
+const CountriesPage = memo(function CountriesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -35,34 +36,18 @@ function CountriesPage() {
     setSortDirection(direction);
   }, []);
 
-  const filteredAndSortedCountries = useMemo(() => {
-    let filtered = countries;
+  const filteredAndSortedCountries = useMemo(
+    () => filterAndSortCountries(countries, searchQuery, sortKey, sortDirection),
+    [countries, searchQuery, sortKey, sortDirection]
+  );
 
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      filtered = countries.filter((country) =>
-        country.name.toLowerCase().includes(query)
-      );
-    }
-
-    const sorted = [...filtered].sort((a, b) => {
-      let comparison = 0;
-
-      if (sortKey === 'name') {
-        comparison = a.name.localeCompare(b.name);
-      } else if (sortKey === 'population') {
-        comparison = a.population - b.population;
-      }
-
-      return sortDirection === 'asc' ? comparison : -comparison;
-    });
-
-    return sorted;
-  }, [countries, searchQuery, sortKey, sortDirection]);
+  const handleRetry = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   if (error) {
     const errorMessage = error instanceof Error ? error.message : 'Failed to fetch countries. Please try again.';
-    return <ErrorState onRetry={() => refetch()} errorMessage={errorMessage} />;
+    return <ErrorState onRetry={handleRetry} errorMessage={errorMessage} />;
   }
 
   return (
@@ -88,7 +73,7 @@ function CountriesPage() {
       </Container>
     </Box>
   );
-}
+});
 
 export default CountriesPage;
 

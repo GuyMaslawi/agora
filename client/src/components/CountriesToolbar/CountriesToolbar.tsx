@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { Box, TextField, ToggleButton, ToggleButtonGroup, Typography, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
@@ -25,27 +25,27 @@ const CountriesToolbar = memo(function CountriesToolbar({
   onSortKeyChange,
   onSortDirectionChange,
 }: CountriesToolbarProps) {
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     onSearchChange(event.target.value);
-  };
+  }, [onSearchChange]);
 
-  const handleSortKeyChange = (
+  const handleSortKeyChange = useCallback((
     _event: React.MouseEvent<HTMLElement>,
     newKey: SortKey | null
   ) => {
     if (newKey !== null) {
       onSortKeyChange(newKey);
     }
-  };
+  }, [onSortKeyChange]);
 
-  const handleSortDirectionChange = (
+  const handleSortDirectionChange = useCallback((
     _event: React.MouseEvent<HTMLElement>,
     newDirection: SortDirection | null
   ) => {
     if (newDirection !== null) {
       onSortDirectionChange(newDirection);
     }
-  };
+  }, [onSortDirectionChange]);
 
   return (
     <Box sx={countriesToolbarStyles.container}>
@@ -75,11 +75,11 @@ const CountriesToolbar = memo(function CountriesToolbar({
           sx={countriesToolbarStyles.toggleGroup}
         >
           <ToggleButton value="name">
-            <SortByAlphaIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
+            <SortByAlphaIcon sx={countriesToolbarStyles.sortIcon} />
             Name
           </ToggleButton>
           <ToggleButton value="population">
-            <TrendingUpIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
+            <TrendingUpIcon sx={countriesToolbarStyles.sortIcon} />
             Population
           </ToggleButton>
         </ToggleButtonGroup>
@@ -91,10 +91,10 @@ const CountriesToolbar = memo(function CountriesToolbar({
           sx={countriesToolbarStyles.toggleGroup}
         >
           <ToggleButton value="asc">
-            <ArrowUpwardIcon sx={{ fontSize: '1rem' }} />
+            <ArrowUpwardIcon sx={countriesToolbarStyles.directionIcon} />
           </ToggleButton>
           <ToggleButton value="desc">
-            <ArrowDownwardIcon sx={{ fontSize: '1rem' }} />
+            <ArrowDownwardIcon sx={countriesToolbarStyles.directionIcon} />
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>

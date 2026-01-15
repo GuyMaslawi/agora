@@ -50,6 +50,10 @@ export const countryCardStyles: Record<string, SxProps<Theme>> = {
       transform: 'scale(1.1)',
     },
   },
+  flagVisible: {
+    position: 'relative',
+    zIndex: 0,
+  },
   flagOverlay: {
     position: 'absolute',
     top: 0,

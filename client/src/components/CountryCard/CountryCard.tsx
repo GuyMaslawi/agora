@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useState, useCallback, useMemo } from 'react';
 import { Card, CardContent, CardMedia, Typography, Box, Skeleton } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PeopleIcon from '@mui/icons-material/People';
@@ -16,6 +16,28 @@ const CountryCard = memo(function CountryCard({ country, onImageLoad, onImageErr
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
 
+  const handleImageLoad = useCallback(() => {
+    setImageLoading(false);
+    onImageLoad?.();
+  }, [onImageLoad]);
+
+  const handleImageError = useCallback(() => {
+    setImageLoading(false);
+    setImageError(true);
+    onImageError?.();
+  }, [onImageError]);
+
+  const flagDisplayStyle = useMemo(() => {
+    const baseStyle = {
+      ...countryCardStyles.flag,
+      ...countryCardStyles.flagVisible,
+    };
+    return {
+      ...baseStyle,
+      display: imageLoading && !imageError ? 'none' : 'block',
+    };
+  }, [imageLoading, imageError]);
+
   return (
     <Card sx={countryCardStyles.card} data-testid="country-card" elevation={0}>
       <Box sx={countryCardStyles.flagContainer}>
@@ -32,22 +54,10 @@ const CountryCard = memo(function CountryCard({ country, onImageLoad, onImageErr
           height="180"
           image={country.flagUrl}
           alt={`${country.name} flag`}
-          sx={{
-            ...countryCardStyles.flag,
-            display: imageLoading && !imageError ? 'none' : 'block',
-            position: 'relative',
-            zIndex: 0,
-          }}
+          sx={flagDisplayStyle}
           loading="eager"
-          onLoad={() => {
-            setImageLoading(false);
-            onImageLoad?.();
-          }}
-          onError={() => {
-            setImageLoading(false);
-            setImageError(true);
-            onImageError?.();
-          }}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
         />
         {imageError && (
           <Box sx={countryCardStyles.flagPlaceholder}>

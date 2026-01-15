@@ -21,6 +21,9 @@ export const errorStateStyles: Record<string, SxProps<Theme>> = {
       width: '100%',
     },
   },
+  errorIcon: {
+    fontSize: '2rem',
+  },
   alertTitle: {
     fontWeight: 700,
     fontSize: '1.25rem',

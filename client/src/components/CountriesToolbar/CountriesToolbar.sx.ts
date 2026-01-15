@@ -56,5 +56,12 @@ export const countriesToolbarStyles: Record<string, SxProps<Theme>> = {
       },
     },
   },
+  sortIcon: {
+    mr: 0.5,
+    fontSize: '1rem',
+  },
+  directionIcon: {
+    fontSize: '1rem',
+  },
 };
 

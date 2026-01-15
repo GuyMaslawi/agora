@@ -43,6 +43,32 @@ export const countriesGridStyles: Record<string, SxProps<Theme>> = {
     borderRadius: 2,
     background: 'rgba(99, 102, 241, 0.05)',
   },
+  skeletonTitle: {
+    width: '70%',
+    height: 32,
+    mb: 2,
+  },
+  skeletonIcon: {
+    width: 20,
+    height: 20,
+  },
+  skeletonDetailText: {
+    flex: 1,
+    ml: 1,
+  },
+  skeletonLabel: {
+    width: '40%',
+    height: 14,
+    mb: 0.5,
+  },
+  skeletonValue: {
+    width: '80%',
+    height: 20,
+  },
+  skeletonValueSmall: {
+    width: '60%',
+    height: 20,
+  },
   emptyState: {
     textAlign: 'center',
     py: 10,

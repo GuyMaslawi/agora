@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { Box, Alert, AlertTitle, Button } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -8,15 +9,18 @@ interface ErrorStateProps {
   errorMessage?: string;
 }
 
-const ErrorState = ({ onRetry, errorMessage }: ErrorStateProps) => {
-  const displayMessage = errorMessage || 'Failed to fetch countries. Please try again.';
+const ErrorState = memo(function ErrorState({ onRetry, errorMessage }: ErrorStateProps) {
+  const displayMessage = useMemo(
+    () => errorMessage || 'Failed to fetch countries. Please try again.',
+    [errorMessage]
+  );
 
   return (
     <Box sx={errorStateStyles.container}>
       <Alert 
         severity="error" 
         sx={errorStateStyles.alert}
-        icon={<ErrorOutlineIcon sx={{ fontSize: '2rem' }} />}
+        icon={<ErrorOutlineIcon sx={errorStateStyles.errorIcon} />}
       >
         <AlertTitle sx={errorStateStyles.alertTitle}>Oops! Something went wrong</AlertTitle>
         {displayMessage}
@@ -32,7 +36,7 @@ const ErrorState = ({ onRetry, errorMessage }: ErrorStateProps) => {
       </Alert>
     </Box>
   );
-};
+});
 
 export default ErrorState;
 
